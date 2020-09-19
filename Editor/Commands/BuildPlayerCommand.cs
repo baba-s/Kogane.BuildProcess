@@ -20,14 +20,19 @@ namespace Kogane
 		//==============================================================================
 		// 変数(readonly)
 		//==============================================================================
-		private readonly string       m_locationPathName;
-		private readonly BuildTarget  m_target;
-		private readonly BuildOptions m_options;
-		private readonly string[]     m_levels;
+		private readonly BuildPlayerOptions m_buildPlayerOptions;
 
 		//==============================================================================
 		// 関数
 		//==============================================================================
+		/// <summary>
+		/// コンストラクタ
+		/// </summary>
+		public BuildPlayerCommand( BuildPlayerOptions buildPlayerOptions )
+		{
+			m_buildPlayerOptions = buildPlayerOptions;
+		}
+
 		/// <summary>
 		/// コンストラクタ
 		/// </summary>
@@ -37,12 +42,17 @@ namespace Kogane
 			string       locationPathName,
 			BuildTarget  target,
 			BuildOptions options
+		) : this
+		(
+			new BuildPlayerOptions
+			{
+				scenes           = levels,
+				locationPathName = locationPathName,
+				target           = target,
+				options          = options
+			}
 		)
 		{
-			m_levels           = levels;
-			m_locationPathName = locationPathName;
-			m_target           = target;
-			m_options          = options;
 		}
 
 		/// <summary>
@@ -50,14 +60,7 @@ namespace Kogane
 		/// </summary>
 		protected override BuildCommandResult DoRun()
 		{
-			var report = BuildPipeline.BuildPlayer
-			(
-				levels: m_levels,
-				locationPathName: m_locationPathName,
-				target: m_target,
-				options: m_options
-			);
-
+			var report    = BuildPipeline.BuildPlayer( m_buildPlayerOptions );
 			var isSuccess = report.summary.result == BuildResult.Succeeded;
 			var message   = ToReportMessage( report );
 
