@@ -62,7 +62,7 @@ namespace Kogane
 		{
 			var report    = BuildPipeline.BuildPlayer( m_buildPlayerOptions );
 			var isSuccess = report.summary.result == BuildResult.Succeeded;
-			var message   = ToReportMessage( report );
+			var message   = ToReportMessage( report, m_buildPlayerOptions );
 
 			return isSuccess ? Success( message ) : Error( message );
 		}
@@ -70,10 +70,11 @@ namespace Kogane
 		/// <summary>
 		/// ビルドレポートをメッセージに整形して返します
 		/// </summary>
-		private static string ToReportMessage( BuildReport report )
+		private static string ToReportMessage( BuildReport report, BuildPlayerOptions options )
 		{
 			var builder = new StringBuilder();
 			builder.AppendLine();
+			builder.AppendLine( EditorJsonUtility.ToJson( new JsonBuildPlayerOptions( options ), true ) );
 			builder.AppendLine( EditorJsonUtility.ToJson( new JsonBuildReport( report ), true ) );
 			var message = builder.ToString();
 			return message;
@@ -82,6 +83,32 @@ namespace Kogane
 		//==============================================================================
 		// 構造体
 		//==============================================================================
+		/// <summary>
+		/// BuildPlayerOptions 型を JSON に変換できるようにする構造体
+		/// </summary>
+		[Serializable]
+		private struct JsonBuildPlayerOptions
+		{
+			[UsedImplicitly] public string[]         scenes;
+			[UsedImplicitly] public string           locationPathName;
+			[UsedImplicitly] public string           assetBundleManifestPath;
+			[UsedImplicitly] public BuildTargetGroup targetGroup;
+			[UsedImplicitly] public BuildTarget      target;
+			[UsedImplicitly] public BuildOptions     options;
+			[UsedImplicitly] public string[]         extraScriptingDefines;
+
+			public JsonBuildPlayerOptions( BuildPlayerOptions other )
+			{
+				scenes                  = other.scenes;
+				locationPathName        = other.locationPathName;
+				assetBundleManifestPath = other.assetBundleManifestPath;
+				targetGroup             = other.targetGroup;
+				target                  = other.target;
+				options                 = other.options;
+				extraScriptingDefines   = other.extraScriptingDefines;
+			}
+		}
+
 		/// <summary>
 		/// BuildReport 型を JSON に変換できるようにする構造体
 		/// </summary>
