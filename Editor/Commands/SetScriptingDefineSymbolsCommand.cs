@@ -42,6 +42,39 @@ namespace Kogane
 		}
 
 		/// <summary>
+		/// コンストラクタ
+		/// </summary>
+		public SetScriptingDefineSymbolsCommand
+		(
+			BuildTarget target,
+			string      defines
+		) : this( BuildPipeline.GetBuildTargetGroup( target ), defines )
+		{
+		}
+
+		/// <summary>
+		/// コンストラクタ
+		/// </summary>
+		public SetScriptingDefineSymbolsCommand
+		(
+			BuildTargetGroup targetGroup,
+			string[]         defines
+		) : this( targetGroup, string.Join( ";", defines ) )
+		{
+		}
+
+		/// <summary>
+		/// コンストラクタ
+		/// </summary>
+		public SetScriptingDefineSymbolsCommand
+		(
+			BuildTarget target,
+			string[]    defines
+		) : this( BuildPipeline.GetBuildTargetGroup( target ), defines )
+		{
+		}
+
+		/// <summary>
 		/// 実行する時に呼び出されます
 		/// </summary>
 		protected override BuildCommandResult DoRun()
